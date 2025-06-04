@@ -44,6 +44,19 @@ class ProductServiceTest {
             assertThat(product).isNotNull();
             assertThat(product.getName()).isEqualTo("노트북");
         }
+
+        @Test
+        @DisplayName("중복된 SKU로 상품을 등록하면 예외가 발생합니다.")
+        void createProductWithDuplicateSku() {
+            productRepository.save(new Product("모니터", "SKU456", "화면", 300000, 2000));
+
+            ProductCreateRequest request = new ProductCreateRequest("모니터-new", "SKU456", "화면", 300000, 2000);
+
+            assertThatThrownBy(() -> productService.createProduct(request))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessageContaining("Product with the same SKU already exists");
+
+        }
     }
 
     @Nested
@@ -85,6 +98,29 @@ class ProductServiceTest {
             assertThat(response.name()).isEqualTo("키보드2");
             assertThat(response.price()).isEqualTo(60000);
         }
+
+        @Test
+        @DisplayName("중복된 SKU로 상품을 수정하면 예외가 발생합니다.")
+        void updateProductWithDuplicateSku() {
+            Product saved = productRepository.save(new Product("키보드", "SKU111", "기계식", 50000, 1500));
+
+            ProductCreateRequest updated = new ProductCreateRequest("키보드-new", "SKU111", "무선 마우스3", 30000, 1200);
+
+            assertThatThrownBy(() -> productService.updateProduct(1L, updated))
+                    .isInstanceOf(CustomException.class)
+                    .hasMessageContaining("Product with the same SKU already exists");
+        }
+
+        @Test
+        @DisplayName("같은 상품에 대한 SKU는 중복 예외가 발생하지 않습니다.")
+        void updateProductWithSameSku() {
+
+            Product saved = productRepository.save(new Product("키보드", "SKU222", "기계식", 50000, 1500));
+            ProductCreateRequest updated = new ProductCreateRequest("키보드-new", "SKU222", "무선 마우스3", 30000, 1200);
+            ProductResponse response = productService.updateProduct(saved.getId(), updated);
+            assertThat(response.name()).isEqualTo("키보드-new");
+        }
+
     }
 
     @Nested

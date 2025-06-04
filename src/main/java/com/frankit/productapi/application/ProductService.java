@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import static com.frankit.productapi.global.support.error.ErrorType.PRODUCT_DUPLICATE_ERROR;
 import static com.frankit.productapi.global.support.error.ErrorType.PRODUCT_NOT_FOUND_ERROR;
 
 @Service
@@ -24,6 +25,10 @@ public class ProductService {
     }
 
     public Long createProduct(ProductCreateRequest request) {
+        if (productRepository.existsBySku(request.sku())) {
+            throw new CustomException(PRODUCT_DUPLICATE_ERROR);
+        }
+
         Product product = new Product(
                 request.name(),
                 request.sku(),
@@ -60,9 +65,13 @@ public class ProductService {
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND_ERROR));
     }
 
-    public ProductResponse updateProduct(Long id, @Valid ProductCreateRequest request) {
+    public ProductResponse updateProduct(Long id, ProductCreateRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND_ERROR));
+
+        if (productRepository.existsBySkuAndIdNot(request.sku(), id)) {
+            throw new CustomException(PRODUCT_DUPLICATE_ERROR);
+        }
 
         product.update(
                 request.name(),

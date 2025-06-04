@@ -20,7 +20,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ApiResponse<Long> createProduct(@RequestBody @Valid ProductCreateRequest request) {
+    public ApiResponse<Long> createProduct(@RequestBody ProductCreateRequest request) {
         Long productId = productService.createProduct(request);
         return ApiResponse.success(productId);
     }
@@ -43,7 +43,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ApiResponse<ProductResponse> updateProduct(
             @PathVariable Long id,
-            @RequestBody @Valid ProductCreateRequest request
+            @RequestBody ProductCreateRequest request
     ) {
         ProductResponse updatedProduct = productService.updateProduct(id, request);
         return ApiResponse.success(updatedProduct);

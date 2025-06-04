@@ -18,6 +18,7 @@ public enum ErrorType {
     PRODUCT_NOT_FOUND_ERROR(BAD_REQUEST, E400, "Product not found", LogLevel.WARN),
     PRODUCT_OPTION_NOT_FOUND_ERROR(BAD_REQUEST, E400, "Product option not found", LogLevel.WARN),
     INVALID_OPTION_TYPE(BAD_REQUEST, E400, "Invalid option type", LogLevel.WARN),
+    PRODUCT_DUPLICATE_ERROR(BAD_REQUEST, E400, "Product with the same SKU already exists", LogLevel.WARN)
     ;
 
     private final HttpStatus status;

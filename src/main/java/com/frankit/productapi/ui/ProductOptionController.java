@@ -17,13 +17,13 @@ public class ProductOptionController {
     private final ProductOptionService optionService;
 
     @PostMapping
-    public ApiResponse<?> addOption(@PathVariable Long productId, @RequestBody @Valid ProductOptionRequest request) {
+    public ApiResponse<?> addOption(@PathVariable Long productId, @RequestBody ProductOptionRequest request) {
         optionService.addOption(productId, request);
         return ApiResponse.success();
     }
 
     @PutMapping("/{optionId}")
-    public ApiResponse<?> updateOption(@PathVariable Long productId, @PathVariable Long optionId, @RequestBody @Valid ProductOptionRequest request) {
+    public ApiResponse<?> updateOption(@PathVariable Long productId, @PathVariable Long optionId, @RequestBody ProductOptionRequest request) {
         optionService.updateOption(productId, optionId, request);
         return ApiResponse.success();
     }
